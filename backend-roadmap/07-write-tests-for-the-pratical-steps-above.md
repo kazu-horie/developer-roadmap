@@ -149,10 +149,10 @@ $ bundle exec rspec spec
 - 計測結果が結果が`coverage/index.html`に作成される
 
 トップ画面
-![トップ画面](/images/simplecov1.png)
+![トップ画面](/backend-roadmap/images/simplecov1.png)
 
 ファイル単位の詳細画面
 
 - 各命令が実行されているかを緑と赤でハイライトしている
 
-![詳細画面](/images/simplecov2.png)
+![詳細画面](/backend-roadmap/images/simplecov2.png)
