@@ -92,7 +92,7 @@
 #### リレーション
 
 - リレーション は ドメインの直積の任意の有限部分集合 (= タプルの集合)
-  - ![](https://latex.codecogs.com/gif.latex?%5C%20R%20%5Csubseteq%20D_1%20%5Ctimes%20D_2%20%5Ctimes%20...%20%5C%20%5Ctimes%20D_n)
+  - リレーション ![](https://latex.codecogs.com/gif.latex?%5C%20R%20%5Csubseteq%20D_1%20%5Ctimes%20D_2%20%5Ctimes%20...%20%5C%20%5Ctimes%20D_n)
 - リレーション `R = {(alice, 23), (chris, 4), (bob, 6), (mike, 5)}` をテーブルで表現すると
 
 |       |     |
@@ -113,6 +113,14 @@
 | chris         | 4             |
 | bob           | 6             |
 | mike          | 5             |
+
+リレーション名と属性名を用いたリレーションの定義
+
+- R をリレーション名、![](https://latex.codecogs.com/gif.latex?A_1%2C%20A_2%2C...%2CA_n)を属性名、dom をドメイン関数とするとき、リレーション![](https://latex.codecogs.com/gif.latex?R%28A_1%2C%20A_2%2C...%2CA_n%29)は![](https://latex.codecogs.com/gif.latex?dom%28A_1%29%5Ctimes%20dom%28A_2%29%5Ctimes%20...%20%5Ctimes%20dom%28A_n%29)の有限部分集合である。
+  - ドメイン関数 dom は![](https://latex.codecogs.com/gif.latex?dom%3A%20A_i%20%5Crightarrow%20D_i%20%5C%20%28i%20%3D%201%2C2%2C...%2Cn%29)
+  - また、![](https://latex.codecogs.com/gif.latex?X%20%3D%20%5C%7BA_i_1%2C%20A_i_2%2C%20...%2C%20A_i_n%5C%7D%2C%20%281%5Cleq%20i_1%20%3C%20i_2%20%3C%20...%20%3C%20i_k%20%5Cleq%20n%29)とするとき、タプル t の X 値とは![](https://latex.codecogs.com/gif.latex?%28a_i_1%2C%20a_i_2%2C%20...%2C%20a_i_n%29)とし、![](https://latex.codecogs.com/gif.latex?t%5BX%5D)や![](https://latex.codecogs.com/gif.latex?t%5BA_i_1%2C%20A_i_2%2C...%2C%20A_i_n%5D)とあらわす
+
+#### リレーションスキーマ
 
 - リレーションは時間の経過によって変わっていく
   - タプルが挿入されたり、削除されたり、更新されたり
@@ -204,3 +212,40 @@ CREATE TRIGGER 部員数整合
   - リレーショナル論理
 
 #### リレーショナル代数
+
+合計 8 個の演算が定義
+
+- 集合演算
+  - 和集合演算
+  - 差集合演算
+  - 共通集合演算
+  - 直積演算
+- リレーショナル代数特有の演算
+  - 射影演算
+  - 選択演算
+  - 結合演算
+  - 商演算
+
+Note: これらの演算の前提として、リレーションが和両立であることが条件だが省略
+
+##### 和集合演算
+
+- ![](https://latex.codecogs.com/gif.latex?R%5Ccup%20S%3D%20%5C%7Bt%5C%20%7C%5C%20t%5Cepsilon%20R%5Cvee%20t%5Cepsilon%20S%5C%7D)
+
+##### 差集合演算
+
+- ![](https://latex.codecogs.com/gif.latex?R-%20S%3D%20%5C%7Bt%5C%20%7C%5C%20t%5Cepsilon%20R%5Cwedge%20%5Clnot%20%28t%5Cepsilon%20S%29%5C%7D)
+
+##### 共通集合演算
+
+- ![](https://latex.codecogs.com/gif.latex?R%5Ccap%20S%3D%20%5C%7Bt%20%7C%20t%5Cepsilon%20R%5Cwedge%20t%5Cepsilon%20S%29%5C%7D)
+
+##### 直積演算
+
+- ![](https://latex.codecogs.com/gif.latex?R%5Ctimes%20S%3D%20%5C%7B%28r%2C%20s%29%20%7C%20r%5Cepsilon%20R%5Cwedge%20s%5Cepsilon%20S%29%5C%7D)
+  - r = (a, b, c), s = (d, e, f) ならば (r, s) = (a, b, c, d, e, f)
+
+##### 射影演算
+
+- リレーションを縦方向に切り出す
+-
