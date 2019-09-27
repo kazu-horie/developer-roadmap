@@ -6,7 +6,7 @@
 
 ## パッケージの公開
 
-- [項目 2](./02-practice-what-you-learnt.md)で作成した ls コマンドを RubyGems に公開
+- [マイルストーン 2](./02-practice-what-you-learnt.md)で作成した ls コマンドを RubyGems に公開
   - https://rubygems.org/gems/rubyls
 
 ### Gem 作成方法

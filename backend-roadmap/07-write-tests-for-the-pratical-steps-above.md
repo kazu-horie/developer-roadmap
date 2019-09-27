@@ -1,10 +1,14 @@
 # 7. Write Tests for the pratical steps above | 実用的なステップのテストを書く
 
-- fizzbuzz のテスト作成
-- 自作パッケージのテスト作成
-- カバレッジ計測
+## 目次
 
-## Fizzbuzz テスト
+- [fizzbuzz のテスト](#fizzbuzz-のテスト)
+- [自作パッケージのテスト](#自作パッケージのテスト)
+- [カバレッジ計測](#カバレッジ計測)
+
+---
+
+## Fizzbuzz のテスト
 
 以下の[fizzbuzz コード](./sample/src/fizzbuzz.rb)のテストを作成する
 
@@ -104,7 +108,7 @@ RSpec.describe Rubyls do
 end
 ```
 
-## カバレッジ計測 (Rspec)
+## カバレッジ計測
 
 - コードカバレッジ = 命令網羅 ?
 
