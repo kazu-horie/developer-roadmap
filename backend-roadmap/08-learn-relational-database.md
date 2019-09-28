@@ -888,7 +888,7 @@ COMMIT;
   - 第 1 正規形
   - 第 2 正規形
   - 第 3 正規形
-  - 第ボイスコッド正規形
+  - ボイスコッド正規形
   - 第 4 正規形
   - 第 5 正規形
 - 一般には第 3 正規形まで理解していればいいとされている
@@ -938,3 +938,9 @@ Y と Z の関係を別テーブルに切り出して、元テーブルから削
   - MySQL, PostgreSQL, ...
 - 代表的な ORM
   - [ActiveRecord](https://rubygems.org/gems/activerecord/versions/5.0.0.1) (Ruby on Rails), [Eloquent](https://readouble.com/laravel/5.dev/ja/eloquent.html) (Laravel)
+
+---
+
+### 参考文献
+
+- [リレーショナルデータベース入門, 増永良文](https://www.saiensu.co.jp/search/?isbn=978-4-7819-1390-2&y=2017)
