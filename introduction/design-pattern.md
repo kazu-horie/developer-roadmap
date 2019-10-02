@@ -181,7 +181,7 @@ public class Main {
 - 虫かごを配列から ArrayList にしたい
   - `ArrayList<Insect> insectCages = new ArrayList<Insect>();`
 - 変更箇所は`InsectCage`クラスのみ
-  - Main は変更しなくてよい
+- **Main は変更しなくて済む**
 
 ```java
 public class InsectCage implements InsectCageInterface {
