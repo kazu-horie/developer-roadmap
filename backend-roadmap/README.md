@@ -10,3 +10,6 @@
 1. [テストについて学ぶ](./06-learn-about-testing.md)
 1. [実用的なステップのテストを書く](./07-write-tests-for-the-pratical-steps-above.md)
 1. [リレーショナルデータベースを学ぶ](./08-learn-relational-database.md)
+1. [実践-フレームワークを使わずにCRUDサイトを作る](./09-practical-time.md)
+1. [フレームワークを学ぶ](./10-learn-a-framework.md)
+1. [実践-フレームワークを使ってNo.9と同じものを作る](./11-practical-time.md)
