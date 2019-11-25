@@ -10,7 +10,7 @@ wikipediaより引用 (https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88
 
 ### Ruby の Web フレームワーク
 
-![](/backend-roadmap/images/google-trends.png)
+![google trends(rails, hanami, sinatra)](/backend-roadmap/images/google-trends.png)
 
 - [Ruby on Rails](https://rubyonrails.org/)
   - デファクトスタンダード
@@ -39,11 +39,11 @@ wikipediaより引用 (https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88
   - デフォルトが望まない場合だけ、開発者が必要な動作を設定すればよいという考え
 - MVC アーキテクチャ
   - MVW (Model View Whatever) の１つ
-  - [PDS (プレゼンテーションとドメインの分離) ](http://bliki-ja.github.io/PresentationDomainSeparation/)を実現するパターßン
+  - [PDS (プレゼンテーションとドメインの分離)](http://bliki-ja.github.io/PresentationDomainSeparation/)を実現するパターン
 
 ## Rails の基本コンポーネント
 
-### Active Record (モデル)
+### Active Record (ActiveRecord::Base)
 
 - モデルに相当し、データとビジネスロジックを担う階層
 - [ORM の Active Record](https://www.techscore.com/tech/Ruby/Rails/other/designpattern/1/) パターンの実装
@@ -58,7 +58,7 @@ wikipediaより引用 (https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88
     - `after_save`, `before_validation`とか
   - クエリインターフェース
 
-### Action View (ビュー)
+### Action View (ActionView::Base)
 
 - レスポンスを実際のWebページにまとめる役割を担う階層
 - テンプレート、パーシャル、レイアウト
@@ -70,7 +70,7 @@ wikipediaより引用 (https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88
   - htmlを簡潔にかけるよう用意されたヘルパー
   - [API document](https://api.rubyonrails.org/classes/ActionView/Helpers.html)
 
-### Action Controller
+### Action Controller (ActionController::Base)
 
 - モデルとビューの仲介を担う階層
   - リクエストから適切な出力を行う
@@ -81,3 +81,22 @@ wikipediaより引用 (https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88
 - パラメータ
   - GETデータ、POSTデータを意識する必要はなく、`params`ハッシュでアクセス可能
   - Strong Parameters による、マスアサインメントの禁止
+
+#### Session (ActionDispatch::Session::AbstractStore)
+
+- `session`インスタンスメソッドからアクセス
+- CacheStore: データをキャッシュに保存する
+- ActiveRecordStore: Active Recordを介してデータベースに保存する
+  - `activerecord-session_store` gem が必要
+- MemCacheStore: データを `memcached`クラスタに保存する
+  - 実装が古いため、CacheStore が推奨
+- CookieStore: セッション情報全てをクライアント側の cookie に保存する
+  - デフォルト & Rails のおすすめ
+  - 非常に軽量, 設定が不要, 改ざん防止, 漏洩防止
+- コードは[ここらへん](https://github.com/rails/rails/tree/09a2979f75c51afb797dd60261a8930f84144af8/actionpack/lib/action_dispatch/middleware/session)
+
+#### Cookie (ActionDispatch::Cookies < Object)
+
+- `cookies`インスタンスメソッドからアクセス
+- 署名済み cookie や 暗号化 cookie　など利用できる
+  - https://api.rubyonrails.org/classes/ActionDispatch/Cookies.html
