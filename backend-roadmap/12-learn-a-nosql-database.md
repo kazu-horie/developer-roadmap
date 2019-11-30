@@ -2,16 +2,42 @@
 
 ## 目次
 
-## 概要
+1. [NoSQL とは](#NoSQL-とは)
+1. [NoSQL の位置づけ](#NoSQL-の位置づけ)
+1. [NoSQL のデータモデルの種類](#NoSQL-のデータモデルの種類)
+
+## NoSQL とは
 
 NoSQL (Not only SQL) は、非リレーショナルデータベースを表す総称 (バズワード)。
-RDBで処理することが難しい半構造化データを扱う場合にNoSQLが用いられる。
+データ処理における**3つのV**の増加による**RDBの課題**を解決するためにNoSQLが登場した。
+
+### ３つのVの増加
+
+- Volume (データ量) の増加
+- Velocity (処理速度) の増加
+- Variety (多様性) の増加
+
+#### Volume, Velocity の増加による課題
+
+- 大量データの処理
+- 高速なデータ処理
+
+RDBでは、スケールアップは性能の限界、スケールアウトは構造上の限界がある
+
+#### Variety の増加による課題
+
+- 半構造化データの処理
+- 複雑なデータ間の関係を持つデータの処理
 
 |データの分類||説明|
 |---|---|---|
 |非リレーショナルデータ| 非構造化データ | 構造がない (e.g. バイナリテキスト) |
 |非リレーショナルデータ| 半構造化データ | 構造はあるがスキーマがない (e.g. JSON, XML) |
 |リレーショナルデータ| 構造化データ | スキーマがあり、構造が変わりにくい |
+
+RDBでは、半構造化データ、複雑な関係を持つデータの格納が困難
+
+これらの課題を **NoSQL** が解決する
 
 ### NoSQL の種類
 
@@ -26,28 +52,11 @@ RDBで処理することが難しい半構造化データを扱う場合にNoSQL
     - 多様な関係性(e.g. 友達である、フォローしている、交際している)を表現することが得意
   - スケールアウトできないが、RDB以上に複雑なデータ処理が可能
 
-### NoSQL のメリット
-
-- データにあったデータモデルを選択できる
-  - "hostname": "db01" というデータにテーブルは必要？
-  - 深い階層を持つJSONをRDBに入れようとすると、リレーショナルが大変
-- 事前にスキーマを定義しなくてもデータを格納できる
-  - 外部データの構造が変化するごとに、RDBスキーマの変更をしなくてはいけない
-  - 外部データの構造が突然変わってデータを取得できないリスクを回避できる
-- プロトタイプはDocDBで早く作り、本番はRDBでかっちり作るという手法がとられるようになってきている
-
-### NoSQL のデメリット
-
-- RDBより機能が乏しい (KVS, ドキュメントDB)
-  - 集計クエリ、ソート、主キー以外で検索、一部更新 など
-- 整合性を保つ機能が使えない (KVS, ドキュメントDB)
-- スキーマ管理をしないと何が入っているかわからなくなる
-  - RDB以上にスキーマの管理が重要
-  - バリデーションが提供されていないものもある
-
 ## NoSQL の位置づけ
 
 ![databases](/backend-roadmap/images/database.png)
+
+source: https://www.slideshare.net/recruitcojp/rdbnosqlnosql?qid=eed1f48e-19cb-45a5-a053-7488409f7f22&v=&b=&from_search=25
 
 - ターンアラウンドタイム重視
   - クエリの応答時間を重視
@@ -83,6 +92,7 @@ RDBで処理することが難しい半構造化データを扱う場合にNoSQL
 - P (分断耐性): ノード群までネットワークが分断されても、正しく動作する。
 
 ![nosql](/backend-roadmap/images/nosql.png)
+
 source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 
 #### CA 特性
@@ -105,10 +115,11 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 - Git のような分散レポジトリ
 - CouchDB, Riak, Amazon DynamoDB
 
-
 ## NoSQL のデータモデルの種類
 
 ### キーバリュー
+
+![key-value](/backend-roadmap/images/key-value.png)
 
 - １つのキーに対して１つの値をとる
   - 値は様々な型をとることができる
@@ -117,10 +128,14 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 
 ### ワイドカラム
 
+![wide-column](/backend-roadmap/images/wide-column.png)
+
 - １つのキーに対して複数の列をとる
   - RDBの列とは異なり、型が固定されておらず、列の数も自由
 
 ### ドキュメント
+
+![document](/backend-roadmap/images/document.png)
 
 - 階層構造データを格納することができる
 - ドキュメントを入れ子にできる
@@ -128,8 +143,12 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 
 ### グラフ
 
+![graph](/backend-roadmap/images/graph.png)
+
 - 点と、それらを結ぶ線を用いてデータを表す
 - 点: ノード, 線: リレーション, 属性: プロパティ
   - この3つのデータをデータ構造として扱う
 
-https://moneyforward.com/engineers_blog/2016/01/13/neo4j/
+### 参考資料
+
+[RDB技術者のためのNoSQLガイド](https://bookwalker.jp/ded1d645ce-db98-48cd-9f66-0f5bee079716/?adpcnt=7qM_Vsc7&gclid=EAIaIQobChMI8vHg2sSS5gIVlKuWCh2Z0wuEEAQYASABEgL3efD_BwE)

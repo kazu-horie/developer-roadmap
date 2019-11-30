@@ -13,3 +13,5 @@
 1. [実践-フレームワークを使わずにCRUDサイトを作る](./09-practical-time.md)
 1. [フレームワークを学ぶ](./10-learn-a-framework.md)
 1. [実践-フレームワークを使ってNo.9と同じものを作る](./11-practical-time.md)
+1. [NoSQL を学ぶ](./12-learn-a-nosql-database.md)
+
