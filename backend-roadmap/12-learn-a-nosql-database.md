@@ -5,6 +5,7 @@
 1. [NoSQL とは](#NoSQL-とは)
 1. [NoSQL の位置づけ](#NoSQL-の位置づけ)
 1. [NoSQL のデータモデルの種類](#NoSQL-のデータモデルの種類)
+1. [MongoDB](#MongoDB)
 
 ## NoSQL とは
 
@@ -46,7 +47,7 @@ RDBでは、半構造化データ、複雑な関係を持つデータの格納�
   - キーバリューモデルとワイドカラムモデルの二つに大別される
 - DocDB
   - KVSの特徴に加え、JSONを扱う機能が豊富
-  - インデックス, JSONの特定のクエリ
+  - JSONの特定の要素へのクエリ、インデックスなど
 - グラフDB
   - ノード間の関連からなるデータ構造
     - 多様な関係性(e.g. 友達である、フォローしている、交際している)を表現することが得意
@@ -139,7 +140,7 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 
 - 階層構造データを格納することができる
 - ドキュメントを入れ子にできる
-- フォーマットはJSON
+- フォーマットはJSON, XML
 
 ### グラフ
 
@@ -152,3 +153,27 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 ### 参考資料
 
 [RDB技術者のためのNoSQLガイド](https://bookwalker.jp/ded1d645ce-db98-48cd-9f66-0f5bee079716/?adpcnt=7qM_Vsc7&gclid=EAIaIQobChMI8vHg2sSS5gIVlKuWCh2Z0wuEEAQYASABEgL3efD_BwE)
+
+## MongoDB の学習
+
+### MongoDB の特徴
+
+  - オープンソースの DocDB
+  - コレクション単位で JSON (正確には BSON) を管理
+  - インデックスが豊富 (配列の要素にインデックス、一部のJSONだけをインデックスに含めるなど)
+  - Mongo シェル上で JavaScript が使える
+  - スケールアウトのサポート
+    - シャーディング
+    - レプリケーション
+
+### 基礎学習
+
+  - [公式マニュアル](https://docs.mongodb.com/manual/)
+  - [ドットインストール](https://dotinstall.com/lessons/basic_mongodb_v3)
+
+### No.11 で制作した [Rails アプリケーション](https://github.com/kazu-horie/rails-blog-app/tree/version/use-mongodb)に利用してみる
+
+- MySQL から MongoDB に変更
+- ODM (Object-Document Mappers) の [mongoid gem](https://rubygems.org/gems/mongoid) を利用
+  - 参考: https://qiita.com/ryohashimoto/items/3f27821229b079a7a4f5
+  - [公式リファレンス](https://docs.mongodb.com/mongoid/current/)
