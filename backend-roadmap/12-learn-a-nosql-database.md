@@ -177,3 +177,4 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 - ODM (Object-Document Mappers) の [mongoid gem](https://rubygems.org/gems/mongoid) を利用
   - 参考: https://qiita.com/ryohashimoto/items/3f27821229b079a7a4f5
   - [公式リファレンス](https://docs.mongodb.com/mongoid/current/)
+- ActiveRecord::Fixtures が使えなくなったので [factory_bot](https://github.com/thoughtbot/factory_bot) に変更
