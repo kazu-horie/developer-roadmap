@@ -75,7 +75,7 @@ source: https://www.slideshare.net/recruitcojp/rdbnosqlnosql?qid=eed1f48e-19cb-4
   - 大量のデータを高速に処理できる
 - BASE 特性
   - Basically Available (基本的にどんな時でも動き)
-  - Soft-state (常に生合成を保っている必要はないが)
+  - Soft-state (常に整合性を保っている必要はないが)
   - Eventual Consistency (結果として整合性が取れている状態に至る)
 
 ### グラフDB と RDB (OLTP) の違い
@@ -101,14 +101,14 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 - RDB (OLTP) が該当
 - Active ノードと Standby ノードのネットワークが切れたら終わり
 
-### CP 特性
+#### CP 特性
 
 クラスタを構成する全てのノードに対して同じデータを見ることができ、ネットワークが分断しても正しく動作する
 
 - ネットワークが切れた際に過半数より多いノードと通信できる集団をクラスタとして動作する
-- Redis, MongoDB, HBase などが該当
+- Redis, MongoDB, HBase などが該当
 
-### AP 特性
+#### AP 特性
 
 クラスタを構成する全てのノードに読み書きができて、ネットワークが切れたとしても読み書きが途切れない
 
