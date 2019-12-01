@@ -150,6 +150,41 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 - 点: ノード, 線: リレーション, 属性: プロパティ
   - この3つのデータをデータ構造として扱う
 
+## データモデルごとのプロダクト
+
+### キーバリューモデル
+
+- Redis
+  - 様々な型のデータを格納可能
+- Memcached
+  - 古くからあり、文字列のみ格納可能
+- Riak
+  - バイナリのデータを格納し、中身の解釈はアプリケーションの責任
+
+### ワイドカラムモデル
+
+- Cassandra
+  - RDBと同様に、スキーマを定義する必要がある
+- HBase
+  - タイムスタンプがあり、古いデータを保持してできる
+- Amazon DynamoDB
+  - スカラー値、多値型、ドキュメント型の3種類を格納可能
+
+### ドキュメントモデル
+
+- MongoDB
+  - データベース -> コレクション -> ドキュメント といったアーキテクチャ
+  - バリデーション機能あり
+- Couchbase
+  - クラスタ -> ドキュメント といったアーキテクチャ
+
+### グラフモデル
+
+- Neo4j
+  - グラフデータに対して Cypher (グラフDBの標準クエリ言語になるかも?) というクエリをかける
+- OrientDB
+  - JSON もあつかえる、マルチモデルのデータベース
+
 ### 参考資料
 
 [RDB技術者のためのNoSQLガイド](https://bookwalker.jp/ded1d645ce-db98-48cd-9f66-0f5bee079716/?adpcnt=7qM_Vsc7&gclid=EAIaIQobChMI8vHg2sSS5gIVlKuWCh2Z0wuEEAQYASABEgL3efD_BwE)
@@ -158,13 +193,14 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 
 ### MongoDB の特徴
 
-  - オープンソースの DocDB
-  - コレクション単位で JSON (正確には BSON) を管理
-  - インデックスが豊富 (配列の要素にインデックス、一部のJSONだけをインデックスに含めるなど)
-  - Mongo シェル上で JavaScript が使える
-  - スケールアウトのサポート
-    - シャーディング
-    - レプリケーション
+- オープンソースの DocDB
+- コレクション単位で JSON (正確には BSON) を管理
+- インデックスが豊富 (配列の要素にインデックス、一部のJSONだけをインデックスに含めるなど)
+- Mongo シェル上で JavaScript が使える
+- スケールアウトのサポート
+  - シャーディング
+    - 参考: https://garafu.blogspot.com/2018/06/mongodb-what-is-sharding.html#scaling
+  - レプリケーション
 
 ### 基礎学習
 
@@ -175,6 +211,5 @@ source: https://blog.nahurst.com/visual-guide-to-nosql-systems
 
 - MySQL から MongoDB に変更
 - ODM (Object-Document Mappers) の [mongoid gem](https://rubygems.org/gems/mongoid) を利用
-  - 参考: https://qiita.com/ryohashimoto/items/3f27821229b079a7a4f5
-  - [公式リファレンス](https://docs.mongodb.com/mongoid/current/)
+  - [公式リファレンスが親切](https://docs.mongodb.com/mongoid/master/tutorials/getting-started-rails/)
 - ActiveRecord::Fixtures が使えなくなったので [factory_bot](https://github.com/thoughtbot/factory_bot) に変更
