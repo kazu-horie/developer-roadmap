@@ -100,3 +100,28 @@ wikipediaより引用 (https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88
 - `cookies`インスタンスメソッドからアクセス
 - 署名済み cookie や 暗号化 cookie　など利用できる
   - https://api.rubyonrails.org/classes/ActionDispatch/Cookies.html
+
+### キャッシュ機構
+
+詳細は下記リンク
+
+-> https://railsguides.jp/caching_with_rails.html#activesupport-cache-memcachestore
+
+
+#### 機能の種類
+
+- ページキャッシュ
+- アクションキャッシュ
+- フラグメントキャッシュ
+- SQL キャッシュ
+- 低レベルキャッシュ
+
+#### キャッシュの格納先
+
+- ActiveSupport::Cache::MemoryStore (メモリストア)
+  - 同一 Ruby プロセス内のメモリに保存
+- ActiveSupport::Cache::FileStore (ファイルストア)
+  - ファイルに保存
+- ActiveSupport::Cache::MemCacheStore (Memcached ストア)
+- ActiveSupport::Cache::RedisStore (Redis ストア)
+- ActiveSupport::Cache::NullStore (何も格納しない)
