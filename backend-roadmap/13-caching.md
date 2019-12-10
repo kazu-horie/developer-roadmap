@@ -98,6 +98,14 @@ JSON.parse(redis.get('key-hoge'))
 
 ## No.11 の制作物 (Rails App) にキャッシュ機能を実装する
 
+対象の Rails App は[こちら](https://github.com/kazu-horie/rails-blog-app)
+
 Rails のキャッシュ機構の詳細については、以下のリンクを参照
 
 -> https://railsguides.jp/caching_with_rails.html#activesupport-cache-memcachestore
+
+### Rails のキャッシュ機構
+
+- ページキャッシュ
+  - gem の [action-page_caching](https://github.com/rails/actionpack-page_caching) を使用
+  - 生成した HTML を public ディレクトリ以下にに生成
