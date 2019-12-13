@@ -100,7 +100,61 @@ JSON.parse(redis.get('key-hoge'))
 
 ### 実装するキャッシュの概要
 
+記事データ (ActiveRecord) をキャッシュすることで、RDB へのアクセスを少なくし、記事の取得処理の実行時間を早くする
+
+### アプローチ
+
 Rails の低レベルキャッシュ機構を用いて、ActiveRecord キャッシュを実装する。
 
-- Rails のキャッシュ機構の詳細については、[本リンク](https://railsguides.jp/caching_with_rails.html#activesupport-cache-memcachestore)を参照
-- 対象の Rails App は[こちら](https://github.com/kazu-horie/rails-blog-app)
+- `Article.find` でキャッシュから取得、存在しない場合はキャッシュに格納
+- `Article#update` で更新した場合は、新しいデータをキャッシュに格納
+
+参考: [Rails のキャッシュ機構について](https://railsguides.jp/caching_with_rails.html#activesupport-cache-memcachestore)
+
+- [制作物レポジトリ](https://github.com/kazu-horie/rails-blog-app/tree/feature/activerecord-cache)
+
+### ソースコード
+
+```ruby
+class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
+
+  def update(params)
+    super(params)
+
+    self.class.write_cache(self)
+  end
+
+  class << self
+    def find(id)
+      record = read_cache(id)
+
+      return record if record
+
+      record = super(id)
+
+      write_cache(record)
+
+      record
+    end
+
+    def cache_key(record_id)
+      "#{to_s.downcase.pluralize}/#{record_id}"
+    end
+
+    def read_cache(record_id)
+      serialized_record = Rails.cache.read(cache_key(record_id))
+
+      return unless serialized_record
+
+      Article.allocate.init_with(serialized_record)
+    end
+
+    def write_cache(record)
+      serialized_record = {}
+      record.encode_with(serialized_record)
+      Rails.cache.write(cache_key(record.id), serialized_record)
+    end
+  end
+end
+```
