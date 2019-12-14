@@ -104,12 +104,10 @@ JSON.parse(redis.get('key-hoge'))
 
 ### アプローチ
 
-Rails の低レベルキャッシュ機構を用いて、ActiveRecord キャッシュを実装する。
+Rails の低レベルキャッシュ機構を用いて、ActiveRecord のキャッシュを実装する。
 
-- `Article.find` でキャッシュから取得、存在しない場合はキャッシュに格納
-- `Article#update` で更新した場合は、新しいデータをキャッシュに格納
-
-参考: [Rails のキャッシュ機構について](https://railsguides.jp/caching_with_rails.html#activesupport-cache-memcachestore)
+- `Article.find` で ActiveRecord インスタンスをキャッシュから取得、存在しない場合は SQL 実行後にキャッシュに格納
+- `Article#update` で更新した場合は、新しい ActiveRecord インスタンスをキャッシュに格納
 
 - [制作物レポジトリ](https://github.com/kazu-horie/rails-blog-app/tree/feature/activerecord-cache)
 
@@ -158,3 +156,86 @@ class ApplicationRecord < ActiveRecord::Base
   end
 end
 ```
+
+### テスト (実行確認)
+
+- キャッシュ未実装時
+
+```log
+Started GET "/articles/7" for ::1 at 2019-12-14 09:54:03 +0900
+Processing by ArticlesController#show as HTML
+  Parameters: {"id"=>"7"}
+  Article Load (0.6ms)  SELECT `articles`.* FROM `articles` WHERE `articles`.`id` = 7 LIMIT 1
+  ↳ app/models/application_record.rb:16:in `find'
+  Rendering articles/show.html.erb within layouts/application
+  Rendered articles/show.html.erb within layouts/application (Duration: 0.4ms | Allocations: 53)
+[Webpacker] Everything's up-to-date. Nothing to do
+Completed 200 OK in 28ms (Views: 10.2ms | ActiveRecord: 0.6ms | Allocations: 3608)
+```
+
+- キャッシュ実装時
+
+```log
+Started GET "/articles/7" for ::1 at 2019-12-14 09:56:19 +0900
+Processing by ArticlesController#show as HTML
+  Parameters: {"id"=>"7"}
+  Rendering articles/show.html.erb within layouts/application
+  Rendered articles/show.html.erb within layouts/application (Duration: 0.4ms | Allocations: 53)
+[Webpacker] Everything's up-to-date. Nothing to do
+Completed 200 OK in 12ms (Views: 11.1ms | ActiveRecord: 0.0ms | Allocations: 3051)
+```
+
+**SQLが実行されていない -> キャッシュ成功**
+
+### ベンチマーク
+
+- MacBook Pro (Retina, 13-inch, Early 2015)
+- 2.7 GHz デュアルコアIntel Core i5
+- 16 GB 1867 MHz DDR3
+- macOS 10.15.1
+
+記事の詳細画面 (GET /articles/{articles}) の showアクション内で計測
+
+```ruby
+class ArticlesController < ApplicationController
+  def show
+    benchmark('ArticlesController#show') do
+      @article = Article.find(params[:id])
+    end
+  end
+end
+```
+
+キャッシュなし
+
+```log
+Started GET "/articles/7" for ::1 at 2019-12-14 09:54:03 +0900
+...
+articles#show (17.3ms)
+...
+Completed 200 OK in 28ms (Views: 10.2ms | ActiveRecord: 0.6ms | Allocations: 3608)
+```
+
+キャッシュあり
+
+```log
+Started GET "/articles/7" for ::1 at 2019-12-14 09:56:19 +0900
+...
+articles#show (0.6ms)
+...
+Completed 200 OK in 12ms (Views: 11.1ms | ActiveRecord: 0.0ms | Allocations: 3051)
+```
+
+- キャッシュなし
+  - 17.3 ms
+- キャッシュあり
+  - 0.6 ms --> **1 ms 未満**
+
+大幅に実行時間を早くすることに成功
+
+### 参考
+
+- [公式 - Rails のキャッシュ機構について](https://railsguides.jp/caching_with_rails.html#activesupport-cache-memcachestore)
+- [ActiveRecord::QueryMethodsのselectメソッドについて深掘りしてみた
+](https://techracho.bpsinc.jp/shin1rok/2019_08_20/79317)
+- [Ruby on Railsのパーシャルとnew_record？メソッドを利用しフォームを簡素化する](https://programming-beginner-zeroichi.jp/articles/35)
