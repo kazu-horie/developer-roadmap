@@ -100,7 +100,9 @@ JSON.parse(redis.get('key-hoge'))
 
 ### 実装するキャッシュの概要
 
-記事データ (ActiveRecord) をキャッシュすることで、RDB へのアクセスを少なくし、記事の取得処理の実行時間を早くする
+記事データ (ActiveRecord) をキャッシュすることで、RDB へのアクセスを少なくし、記事の取得処理の実行時間を早くする。
+
+Rails の SQLキャッシュとの違いは、生存期間。既存の SQL キャッシュの生存期間は同一アクション内。
 
 ### アプローチ
 
@@ -193,6 +195,8 @@ Completed 200 OK in 12ms (Views: 11.1ms | ActiveRecord: 0.0ms | Allocations: 305
 - 2.7 GHz デュアルコアIntel Core i5
 - 16 GB 1867 MHz DDR3
 - macOS 10.15.1
+- 実験データ
+  - 記事 1万レコード
 
 記事の詳細画面 (GET /articles/{articles}) の showアクション内で計測
 
@@ -211,7 +215,7 @@ end
 ```log
 Started GET "/articles/7" for ::1 at 2019-12-14 09:54:03 +0900
 ...
-articles#show (17.3ms)
+articles#show (8.3ms)
 ...
 Completed 200 OK in 28ms (Views: 10.2ms | ActiveRecord: 0.6ms | Allocations: 3608)
 ```
@@ -221,15 +225,15 @@ Completed 200 OK in 28ms (Views: 10.2ms | ActiveRecord: 0.6ms | Allocations: 360
 ```log
 Started GET "/articles/7" for ::1 at 2019-12-14 09:56:19 +0900
 ...
-articles#show (0.6ms)
+articles#show (1.6ms)
 ...
 Completed 200 OK in 12ms (Views: 11.1ms | ActiveRecord: 0.0ms | Allocations: 3051)
 ```
 
 - キャッシュなし
-  - 17.3 ms
+  - 大体 6 ~ 8 ms
 - キャッシュあり
-  - 0.6 ms --> **1 ms 未満**
+  - **2 ms 未満**
 
 大幅に実行時間を早くすることに成功
 
