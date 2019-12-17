@@ -2,7 +2,7 @@
 
 ## 目標
 
-- キャッシュとは何かを理解し、アプリケーションレベルでのキャッシュを実装できるようになる
+キャッシュとは何かを理解し、アプリケーションレベルでのキャッシュを実装できるようになる
 
 ## 目次
 
@@ -117,15 +117,17 @@ Rails の低レベルキャッシュ機構を用いて、ActiveRecord のキャ�
 
 ```ruby
 class ApplicationRecord < ActiveRecord::Base
+  include RecordCache
+
   self.abstract_class = true
+end
+```
 
-  def update(params)
-    super(params)
+```ruby
+module RecordCache
+  extend ActiveSupport::Concern
 
-    self.class.write_cache(self)
-  end
-
-  class << self
+  module ClassMethods
     def find(id)
       record = read_cache(id)
 
@@ -156,7 +158,14 @@ class ApplicationRecord < ActiveRecord::Base
       Rails.cache.write(cache_key(record.id), serialized_record)
     end
   end
+
+  def update(params)
+    super(params)
+
+    self.class.write_cache(self)
+  end
 end
+
 ```
 
 ### テスト (実行確認)
