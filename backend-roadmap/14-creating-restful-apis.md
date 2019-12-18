@@ -83,9 +83,12 @@ source: 山本陽平, Web を支える技術, P.37
 
 ## RESTful API を作成する
 
-No.11 のブログアプリと同機能の RESTful API を作成する。
+No.11 のブログアプリと同機能の RESTful (JSON) API を作成する。
 
-[制作物リンク](https://github.com/kazu-horie/rails-blog-api)
+[制作物はこちら](https://github.com/kazu-horie/rails-blog-api)
+
+- [公式 - Rails の API モード](https://railsguides.jp/api_app.html)を参考
+  - `rails new {app_name} --api` を用いれば API 様のコンポーネントや設定をジェネレートしてくれる
 
 ### 参考
 
