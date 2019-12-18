@@ -86,7 +86,13 @@ source: 山本陽平, Web を支える技術, P.37
 No.11 のブログアプリと同機能の RESTful API を作成する。
 
 [制作物リンク](https://github.com/kazu-horie/rails-blog-api)
+  - [API 設計書 兼 API クライアント - Swagger](https://github.com/kazu-horie/rails-blog-api/blob/master/docs/swagger.yaml)
+  - [CORS 対応](https://github.com/cyu/rack-cors#rails-configuration)
+
+## REST 原則のチェック
 
 ### 参考
 
 - [Webを支える技術, 山本陽平 著](https://gihyo.jp/magazine/wdpress/plus/978-4-7741-4204-3)
+- [Qiita@uneosy - RESTful API設計におけるHTTPステータスコードの指針](https://qiita.com/uenosy/items/ba9dbc70781bddc4a491)
+- [HTTP レスポンスステータスコード](https://developer.mozilla.org/ja/docs/Web/HTTP/Status)
