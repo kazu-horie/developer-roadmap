@@ -42,7 +42,7 @@ source: 山本陽平, Web を支える技術, P31
 
 ### キャッシュ
 
-- 一度取得したリソースをクライアント側で使い回す方式
+- 一度取得したリソースをクライアント側で使い回す方式 (HTTP Cache)
 - クライアント・サーバ間の通信を減らすことで、より効率的に処理できる
 
 ### 統一インターフェース
@@ -87,16 +87,76 @@ No.11 のブログアプリと同機能の RESTful (JSON) API を作成する。
 
 [制作物はこちら](https://github.com/kazu-horie/rails-blog-api)
 
-- [公式 - Rails の API モード](https://railsguides.jp/api_app.html)を参考
-  - `rails new {app_name} --api` を用いれば API 様のコンポーネントや設定をジェネレートしてくれる
 - [API 設計書 兼 API クライアント - Swagger](https://github.com/kazu-horie/rails-blog-api/blob/master/docs/swagger.yaml)
   - issue: swagger editor が yml のシンタックスエラーをはく
-- [CORS 対応](https://github.com/cyu/rack-cors#rails-configuration)
+- [Rails の API モード - 公式ガイド](https://railsguides.jp/api_app.html)を参考に JSON API を実装
+  - `rails new {app_name} --api` を用いれば API 様のコンポーネントや設定をジェネレートしてくれる
+- [CORS 対応](https://github.com/cyu/rack-cors#rails-configuration) をする
+- HTTP キャッシュに対応する
 
-## REST 原則のチェック
+### HTTP キャッシュ に対応する
+
+- HTTP キャッシュ についての主な仕様は、[MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Caching)にまとまっている
+- こちらは、[Cache の制御に用いるヘッダー一覧](https://qiita.com/anchoor/items/2dc6ab8347c940ea4648)
+  - issue: ここにまとめて整理したい
+
+> GET requests should be cachable by default – until special condition arises. 
+
+source: https://restfulapi.net/caching/
+
+基本的に GET リクエストに対してのリソースはキャッシュできるようにしましょう。(条件付き GET とも呼ばれる)
+
+とのことなので、HTTP キャッシュ機能は、**記事全件取得 API** と **記事取得 API** に実装した。
+
+### Rails の HTTP キャッシュ
+
+- [Rails の HTTP キャッシュ - 公式ガイド](https://railsguides.jp/caching_with_rails.html#%E6%9D%A1%E4%BB%B6%E4%BB%98%E3%81%8Dget%E3%81%AE%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88)
+- デフォルトで、Rack::Etag, Rack::ConditionGet Middleware が etag を用いたHTTP キャッシュを実行してくれている
+  - HTTP キャッシュ既に自体はできている！
+
+初回リクエスト
+
+![request-1](/backend-roadmap/images/request-1.png)
+
+2 回目リクエスト
+
+![request-2](/backend-roadmap/images/request-2.png)
+
+### Rails の デフォルトのHTTP キャッシュを改善！
+
+[Qiita@cuzicさんのこの記事が全てです。](https://qiita.com/cuzic/items/326e8600dc596de6636a)
+
+要するに、
+
+- リソース鮮度の評価 (HTTPキャッシュの可否) はミドルウェアが担っているので、送信しないかもしれないレスポンスボディを毎回作っている
+  - ネットワークのトラフィック量には恩恵があるけど、CPU 負荷や実行時間はほとんど変わらない
+- リソースの鮮度の評価を、コントローラ内でやればやること少なくなる
+  - HTMLのレンダリングとかJSONのシリアライズとか
+
+-> [`ActionController::ConditionalGet#fresh_when`](https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html#method-i-fresh_when) を使えば良い
+
+```ruby
+def index
+  @articles = Article.all
+
+  render json: @articles unless fresh_when(etag: @articles)
+end
+```
+
+### RESTful ?
+
+- クライアントサーバ -> OK (もちろん)
+- ステートレスサーバ -> OK (ステートを持つ機能はないため)
+- 統一インターフェース -> OK ([Rails のエンドポイント設計は REST 指向](https://railsguides.jp/routing.html#%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E3%83%AB%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0-rails%E3%81%AE%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88))
+- 階層化システム -> N/A (規模的にも必要なかったため)
+- コードオンデマンド -> N/A (API のため)
+- キャッシュ -> OK (上記の通り)
+
+(おそらく) RESTful !!!
 
 ### 参考
 
 - [Webを支える技術, 山本陽平 著](https://gihyo.jp/magazine/wdpress/plus/978-4-7741-4204-3)
+- [Representational State Tranfer, Roy Thomas Fielding](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 - [Qiita@uneosy - RESTful API設計におけるHTTPステータスコードの指針](https://qiita.com/uenosy/items/ba9dbc70781bddc4a491)
 - [HTTP レスポンスステータスコード](https://developer.mozilla.org/ja/docs/Web/HTTP/Status)
