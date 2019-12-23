@@ -102,17 +102,16 @@ No.11 のブログアプリと同機能の RESTful (JSON) API を作成する。
 
 > GET requests should be cachable by default – until special condition arises. 
 
-source: https://restfulapi.net/caching/
+> 基本的に GET リクエストに対してのリソースはキャッシュできるようにしましょう。(条件付き GET とも呼ばれる)
 
-基本的に GET リクエストに対してのリソースはキャッシュできるようにしましょう。(条件付き GET とも呼ばれる)
+source: https://restfulapi.net/caching/
 
 とのことなので、HTTP キャッシュ機能は、**記事全件取得 API** と **記事取得 API** に実装した。
 
 ### Rails の HTTP キャッシュ
 
 - [Rails の HTTP キャッシュ - 公式ガイド](https://railsguides.jp/caching_with_rails.html#%E6%9D%A1%E4%BB%B6%E4%BB%98%E3%81%8Dget%E3%81%AE%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88)
-- デフォルトで、Rack::Etag, Rack::ConditionGet Middleware が etag を用いたHTTP キャッシュを実行してくれている
-  - HTTP キャッシュ既に自体はできている！
+- デフォルトで、Rack::Etag, Rack::ConditionGet Middleware が etag を用いた HTTP キャッシュを実行してくれている
 
 初回リクエスト
 
@@ -130,7 +129,7 @@ source: https://restfulapi.net/caching/
 
 - リソース鮮度の評価 (HTTPキャッシュの可否) はミドルウェアが担っているので、送信しないかもしれないレスポンスボディを毎回作っている
   - ネットワークのトラフィック量には恩恵があるけど、CPU 負荷や実行時間はほとんど変わらない
-- リソースの鮮度の評価を、コントローラ内でやればやること少なくなる
+- リソースの鮮度の評価を、コントローラ内ですれば処理が少なくなる
   - HTMLのレンダリングとかJSONのシリアライズとか
 
 -> [`ActionController::ConditionalGet#fresh_when`](https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html#method-i-fresh_when) を使えば良い

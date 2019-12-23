@@ -204,8 +204,6 @@ Completed 200 OK in 12ms (Views: 11.1ms | ActiveRecord: 0.0ms | Allocations: 305
 - 2.7 GHz デュアルコアIntel Core i5
 - 16 GB 1867 MHz DDR3
 - macOS 10.15.1
-- 実験データ
-  - 記事 1万レコード
 
 記事の詳細画面 (GET /articles/{articles}) の showアクション内で計測
 
