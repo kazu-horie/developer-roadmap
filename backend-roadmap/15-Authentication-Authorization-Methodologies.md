@@ -120,3 +120,15 @@ Handle Token
 - サーバ側でトークンを無効にすることができない (Handle)
 
 ## 認証機能の実装
+
+No.11 で制作した [rails-blog-app](https://github.com/kazu-horie/rails-blog-app) に cookie 認証を実装する
+
+### Gem
+
+- [Devise](https://github.com/heartcombo/devise) (使用)
+- [authlogic](https://github.com/binarylogic/authlogic)
+- [clearance](https://github.com/thoughtbot/clearance)
+
+### 制作物
+
+https://github.com/kazu-horie/rails-blog-app/tree/feature/authentication
