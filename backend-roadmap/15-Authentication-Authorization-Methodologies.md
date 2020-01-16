@@ -3,7 +3,7 @@
 ## 目標
 
 1. 認証の方法論を理解し、認証機能を実装できるようになる。
-1. 認可の方法論を理解し、認可機能を実装できるようになる。
+1. 認可の方法論を理解し、認可を用いた機能を実装できるようになる。
 
 ## 目次
 
@@ -12,13 +12,17 @@
 - [認証機能の実装](#認証機能の実装)
 - [認可 とは](#認可-とは)
 - [認可方式](#認可方式)
-- [認可機能の実装](#認可機能の実装)
+- [認可を用いた機能の実装](#認可を用いた機能の実装)
 
 ## 認証 とは
 
 > 認証とは、対象の正当性や真正性を確かめること。ITの分野では、相手が名乗った通りの本人であると何らかの手段により確かめる本人確認（相手認証）のことを単に認証ということが多い。
 
 source: http://e-words.jp/w/%E8%AA%8D%E8%A8%BC.html
+
+> 通信の相手が 誰 (何) であるかを確認すること
+
+source: https://dev.classmethod.jp/security/authentication-and-authorization/
 
 認証は２つの意味がある
 
@@ -132,3 +136,15 @@ No.11 で制作した [rails-blog-app](https://github.com/kazu-horie/rails-blog-
 ### 制作物
 
 https://github.com/kazu-horie/rails-blog-app/tree/feature/authentication
+
+## 認可とは
+
+> 認証済みの利用者に対し、アクセス権の設定などを参照して本人に与えられた適切な権限による操作を許可する（権限外の利用を拒否する）こと
+
+source: http://e-words.jp/w/%E8%AA%8D%E8%A8%BC.html
+
+> とある特定の条件に対して、リソースアクセスの権限を与えること
+
+source: https://dev.classmethod.jp/security/authentication-and-authorization/
+
+
