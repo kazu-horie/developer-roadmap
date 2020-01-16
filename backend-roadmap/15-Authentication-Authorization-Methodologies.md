@@ -12,6 +12,7 @@
 - [認証機能の実装](#認証機能の実装)
 - [認可 とは](#認可-とは)
 - [認可方式](#認可方式)
+- [OpenID Connect](#OpenID-Connect)
 - [認可を用いた機能の実装](#認可を用いた機能の実装)
 
 ## 認証 とは
@@ -137,7 +138,7 @@ No.11 で制作した [rails-blog-app](https://github.com/kazu-horie/rails-blog-
 
 https://github.com/kazu-horie/rails-blog-app/tree/feature/authentication
 
-## 認可とは
+## 認可 とは
 
 > 認証済みの利用者に対し、アクセス権の設定などを参照して本人に与えられた適切な権限による操作を許可する（権限外の利用を拒否する）こと
 
@@ -147,4 +148,43 @@ source: http://e-words.jp/w/%E8%AA%8D%E8%A8%BC.html
 
 source: https://dev.classmethod.jp/security/authentication-and-authorization/
 
+- 第三者に公開する API において認可が必要
+- Twitter, Google など様々なサービスが認可を用いて、自サービスのリソースを提供
 
+## 認可方式
+
+### API key
+
+前もって発行した key (共通鍵) をもとに 外部 API を実行する
+
+- アプリに対して認可を行う方法
+
+### OAuth
+
+認可においての標準的な仕様
+
+- アプリのユーザごとに認可を行う方法
+
+[RFC 6749](https://tools.ietf.org/html/rfc6749)
+
+![oauth](/backend-roadmap/images/oauth.png)
+
+source: https://qiita.com/sgmryk/items/0f5734a2a6991a6a1873
+
+todo: 仕様の詳細についてまとめる
+
+## OpenID Connect
+
+> OpenID Connectは、OAuthのフローをベースにしており、本来、クライアント側で行っていた認証処理を、他のサーバー(OpenID Provider)にお任せして、その認証結果のみを安全な方式(JSON Web Token)でクライアントが受け取って認証する方式です。
+
+source: https://tech-lab.sios.jp/archives/8651
+
+[OpenID Connect 仕様 日本語訳](https://openid-foundation-japan.github.io/openid-connect-core-1_0.ja.html)
+
+わかりやすい記事
+
+- [TECK.LAB - 多分わかりやすい OpenID Connect](https://tech-lab.sios.jp/archives/8651)
+- [Qiita@shoichiimamura - OAuth2.0とOpenID Connectの概要](https://qiita.com/shoichiimamura/items/57129d12868bbd81f48e)
+- [Qiita@TakahikoKawasaki - 一番分かりやすい OpenID Connect の説明](https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe)
+
+## 認可を用いた機能の実装
