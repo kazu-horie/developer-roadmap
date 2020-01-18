@@ -16,3 +16,4 @@
 1. [NoSQL を学ぶ](./12-learn-a-nosql-database.md)
 1. [キャッシュ](./13-caching.md)
 1. [RESTful API を作成する](./14-creating-restful-apis.md)
+1. [認証・認可の方法](15-Authentication-Authorization-Methodologies.md)

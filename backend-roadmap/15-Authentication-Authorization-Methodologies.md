@@ -1,4 +1,4 @@
-# Authentication/Authorization Methodologies
+# 15. Authentication/Authorization Methodologies
 
 ## 目標
 
@@ -165,7 +165,9 @@ source: https://dev.classmethod.jp/security/authentication-and-authorization/
 
 - アプリのユーザごとに認可を行う方法
 
-[RFC 6749](https://tools.ietf.org/html/rfc6749)
+[OAuth 1.0 : RFC 5849](https://tools.ietf.org/html/rfc5849)
+
+[OAuth 2.0 : RFC 6749](https://tools.ietf.org/html/rfc6749)
 
 ![oauth](/backend-roadmap/images/oauth.png)
 
@@ -179,12 +181,48 @@ todo: 仕様の詳細についてまとめる
 
 source: https://tech-lab.sios.jp/archives/8651
 
+OAuth に認証の機能を追加した仕様
+
+- 単なる OAuth を認証に用いるのは危ない
+  - トークン置換攻撃 など
+- OpenID Connect は、アクセストークンと一緒に ID トークンを返却
+
+source: [単なる OAuth 2.0 を認証に使うと、車が通れるほどのどでかいセキュリティー・ホールができる](https://www.sakimura.org/2012/02/1487/)
+
 [OpenID Connect 仕様 日本語訳](https://openid-foundation-japan.github.io/openid-connect-core-1_0.ja.html)
 
 わかりやすい記事
 
 - [TECK.LAB - 多分わかりやすい OpenID Connect](https://tech-lab.sios.jp/archives/8651)
-- [Qiita@shoichiimamura - OAuth2.0とOpenID Connectの概要](https://qiita.com/shoichiimamura/items/57129d12868bbd81f48e)
+- [Qiita@shoichiimamura - OAuth2.0とOpenID Connect の概要](https://qiita.com/shoichiimamura/items/57129d12868bbd81f48e)
 - [Qiita@TakahikoKawasaki - 一番分かりやすい OpenID Connect の説明](https://qiita.com/TakahikoKawasaki/items/498ca08bbfcc341691fe)
 
 ## 認可を用いた機能の実装
+
+Twitter に認可した後、Twitter API の [タイムライン取得 API](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-home_timeline) を利用する。
+
+### Twitter API
+
+Twitter の認証が必要な API は、アプリケーションレベルとユーザレベルで認証方法が異なる。
+
+- アプリケーションレベル: OAuth 2.0
+- ユーザレベル: OAuth 1.0
+
+### 制作物
+
+[rails-twitter-api-client](https://github.com/kazu-horie/rails-twitter-api-client)
+
+### 関連 GEM
+
+- [oauth](https://github.com/oauth-xx/oauth-ruby) (使用)
+  - OAuth 1.0 を提供
+- [oauth2](https://github.com/oauth-xx/oauth2)
+  - OAuth 2.0 を提供
+- [omniauth](https://github.com/omniauth/omniauth)
+  - 各認可プロトコルへの共通インターフェースを提供
+  - OAuth 1.0, OAuth 2.0, OpenID Connect の差異を吸収してくれる
+
+### 参考
+
+- [Qiita@riocampos - OAuth gemだけでTwitter APIを使ってみる](https://qiita.com/riocampos/items/5aaa636866af885ef1ac)
+- [hawksnowlog - Twitter の OAuth を使ってログイン機能を作ってみた](https://hawksnowlog.blogspot.com/2018/10/twitter-oauth-with-sinatra.html)
