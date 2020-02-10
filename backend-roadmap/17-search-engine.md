@@ -76,6 +76,9 @@ source: [検索サーバーの仕組み - Chopesu](https://chopesu.com/programin
 
 - MySQL で用意された転置インデックス
 - [全文検索関数](https://dev.mysql.com/doc/refman/5.6/ja/fulltext-search.html)
+- 難点
+  - 日本語未対応
+  - 更新が遅い
 - スキーマ例
 
 ```sql
@@ -93,10 +96,27 @@ SELECT COUNT(*) AS count
 FROM persons
 WHERE
   MATCH (introduction)
-  AGAINST ("ドラマ" IN NATURAL LANGUAGE MODE);
+  AGAINST ("anime" IN NATURAL LANGUAGE MODE);
 ```
 
 ### Mroonga
+
+全文検索エンジンである Groonga をベースとした MySQL の全文検索に特化したストレージエンジン。
+
+- 更新性能の向上
+- 検索性能の向上
+- 位置情報検索のサポート
+
+### 検索サーバー / エンジン
+
+高度な検索手段をたくさん用意している
+
+- 類義語検索
+- ふりがな検索
+- 関連度に基づいた検索
+- スペリングミス時の検索
+- 空間検索
+- ファセット検索
 
 ### Apache Solr
 
@@ -107,7 +127,7 @@ WHERE
 
 ### Elastic Search
 
-- 開発元: ElasticSearch
+- Elastic 社が開発している Lucene ベースの検索サーバ
 - RESTful API で CRUD 操作可能 (様々なシステムと連携しやすい)
 - クラスタ、スケーリングが簡単
 - N-Gram と 形態素解析 の両方が使用可能
