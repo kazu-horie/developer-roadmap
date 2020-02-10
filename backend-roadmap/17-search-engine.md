@@ -138,6 +138,4 @@ source: [全文検索エンジンについて調べてみた - 虎の穴](https:
 
 ![searchengine-trends](/backend-roadmap/images/search-engine-trends.png)
 
-RDB の LIKE でも
-
 ## 記事アプリに全文検索を実装する
