@@ -8,7 +8,8 @@
 
 1. [全文検索エンジン とは](#全文検索エンジン-とは)
 1. [プロダクト](#プロダクト)
-1. [記事アプリに全文検索を実装する](#記事アプリに全文検索を実装する)
+1. [記事アプリに全文検索を実装する (MySQL 5.7)](#記事アプリに全文検索を実装する-mysql-57)
+1. [記事アプリに全文検索を実装する (ElasticSearch 7.6.0)](#記事アプリに全文検索を実装する-ElasticSearch-760)
 
 ## 全文検索エンジン とは
 
@@ -64,7 +65,7 @@ source: [検索サーバーの仕組み - Chopesu](https://chopesu.com/programin
 
 ### RDBMS
 
-- [MySQL (の Full Text インデックス)](https://dev.mysql.com/doc/refman/5.6/ja/innodb-fulltext-index.html)
+- [MySQL (の Full Text インデックス)](https://dev.mysql.com/doc/refman/5.7/en/innodb-fulltext-index.html)
 - [Mroonga](https://mroonga.org/ja/)
 
 ### 検索サーバー (全文検索に特化したデータベース)
@@ -74,11 +75,8 @@ source: [検索サーバーの仕組み - Chopesu](https://chopesu.com/programin
 
 ### MySQL (の Full Text インデックス)
 
-- MySQL で用意された転置インデックス
-- [全文検索関数](https://dev.mysql.com/doc/refman/5.6/ja/fulltext-search.html)
-- 難点
-  - 日本語未対応
-  - 更新が遅い
+- MySQL に用意された転置インデックス
+- [全文検索関数](https://dev.mysql.com/doc/refman/5.7/en/fulltext-search.html)
 - スキーマ例
 
 ```sql
@@ -99,14 +97,6 @@ WHERE
   AGAINST ("anime" IN NATURAL LANGUAGE MODE);
 ```
 
-### Mroonga
-
-全文検索エンジンである Groonga をベースとした MySQL の全文検索に特化したストレージエンジン。
-
-- 更新性能の向上
-- 検索性能の向上
-- 位置情報検索のサポート
-
 ### 検索サーバー / エンジン
 
 高度な検索手段をたくさん用意している
@@ -125,7 +115,7 @@ WHERE
 - ElasticSearch に比べると、クラスタ、スケーリングが面倒
 - N-Gram と 形態素解析 の両方が使用可能
 
-### Elastic Search
+### ElasticSearch
 
 - Elastic 社が開発している Lucene ベースの検索サーバ
 - RESTful API で CRUD 操作可能 (様々なシステムと連携しやすい)
@@ -138,4 +128,285 @@ source: [全文検索エンジンについて調べてみた - 虎の穴](https:
 
 ![searchengine-trends](/backend-roadmap/images/search-engine-trends.png)
 
-## 記事アプリに全文検索を実装する
+## 記事アプリに全文検索を実装する (MySQL 5.7)
+
+今回は N-gram を用いた FullText Index を利用する。
+
+- [制作物](https://github.com/kazu-horie/rails-blog-app/tree/feature/full-text-search)
+
+### 実際の画面
+
+- 検索フォームから記事を検索
+
+![検索フォームから記事を検索](/backend-roadmap/images/all-articles-using-mysql.png)
+
+- title と description から全文検索でヒットした記事を表示
+
+![検索結果](/backend-roadmap/images/search-result-using-mysql.png)
+
+### 実装手順
+
+1. MySQL の設定
+1. マイグレーション
+1. 検索処理の実装
+
+- 参考 [RailsとMySQLでN-gram化したデータを使って全文検索をFULL TEXT INDEXで実装する](https://github.com/kazu-horie/rails-blog-app/tree/feature/full-text-search/mysql)
+
+### MySQL の設定
+
+- N-gram のトークンサイズの最低値を ２ に変更 (デフォルトは3)
+- my.cnf に以下を記載して、MySQL を再起動
+
+```
+[mysqld]
+innodb_ft_min_token_size = 2
+```
+
+### マイグレーション
+
+- FullText Index を作成
+
+```ruby
+class AddFullTextIndexToArticles < ActiveRecord::Migration[6.0]
+  def change
+    add_index :articles, :title, type: :fulltext
+  end
+end
+```
+
+### Model
+
+```ruby
+class Article < ApplicationRecord
+
+...
+
+  class << self
+    def search(columns:, keywords:)
+      where("MATCH (#{columns.join(',')}) AGAINST (? IN BOOLEAN MODE)",keywords)
+    end
+  end
+end
+```
+
+### Controller
+
+```ruby
+class ArticlesController < ApplicationController
+
+...
+
+  def index
+    if params[:q]
+      @articles = Article.search(columns: [:title], keywords: params[:q])
+      return
+    end
+
+    @articles = Article.all
+  end
+```
+
+### 参考
+
+- [Qiita - RailsとMySQLでN-gram化したデータを使って全文検索をFULL TEXT INDEXで実装する](https://qiita.com/nabeen/items/275e46d318103ff737b0)
+
+## 記事アプリに全文検索を実装する (ElasticSearch 7.6.0)
+
+### 画面
+
+- 検索フォームから記事を検索
+
+![検索フォームから記事を検索](/backend-roadmap/images/all-articles-using-es.png)
+
+- title と description から全文検索でヒットした記事を表示
+  - 類義語: `旅館,お宿,旅亭 => ホテル`
+
+![検索結果](/backend-roadmap/images/search-result-using-es.png)
+
+### 実装手順
+
+1. 環境構築
+2. Gem のインストール
+3. 全文検索の実装
+4. 類義語検索を追加
+
+### 環境構築
+
+#### ElasticSearch のインストール
+
+```
+$ brew tap elastic/tap
+$ brew install elastic/tap/elasticsearch-full
+```
+
+https://www.elastic.co/guide/en/elastic-stack-get-started/7.6/get-started-elastic-stack.html#install-elasticsearch
+
+#### kuromoji (日本語形態素解析エンジン) をインストール
+
+```
+$ elasticsearch-plugin install analysis-kuromoji
+```
+
+https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html
+
+### Gem のインストール
+
+- [elasticsearch-rails](https://github.com/elastic/elasticsearch-rails)
+  - Rails 用の ElasticSearch クライアント
+- [elasticsearch-model](https://github.com/elastic/elasticsearch-rails/tree/master/elasticsearch-model)
+  - ActiveRecord と ElasticSeach インデックスのマッピング
+  - DB のデータと同期されるようによしなに API を叩いてくれる
+
+```
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+```
+
+### 全文検索機能を実装
+
+#### Model
+
+```ruby
+module ArticleSearchable
+  extend ActiveSupport::Concern
+
+  included do
+    include Elasticsearch::Model
+
+    index_name "articles_#{Rails.env}"
+
+    settings do
+      mapping do
+        indexes :id,          type: 'integer'
+        indexes :user_id,     type: 'integer'
+        indexes :title,       type: 'text', analyzer: 'kuromoji'
+        indexes :description, type: 'text', analyzer: 'kuromoji'
+      end
+    end
+
+    # コミット時に API を叩くことによって DB の内容を ES に同期
+    after_commit on: [:create] do
+      __elasticsearch__.index_document
+    end
+
+    after_commit on: [:update] do
+      __elasticsearch__.update_document
+    end
+
+    after_commit on: [:destroy] do
+      __elasticsearch__.delete_document
+    end
+
+    # ES の Search API で全文検索
+    def self.search(columns:, keywords:)
+      __elasticsearch__.search(
+        query: {
+          multi_match: {
+            query: keywords,
+            fields: columns,
+            type: 'cross_fields'
+          }
+        }
+      ).records
+    end
+  end
+
+  class_methods do
+    def create_index!
+      client = __elasticsearch__.client
+
+      begin
+        client.indices.delete index: index_name
+      rescue StandardError
+        nil
+      end
+
+      client.indices.create(
+        index: index_name,
+        body: {
+          settings: settings.to_hash,
+          mappings: mappings.to_hash
+        }
+      )
+    end
+  end
+end
+
+class Article < ApplicationRecord
+  include ArticleSearchable
+  ...
+end
+```
+
+#### Controller
+
+```ruby
+class ArticlesController < ApplicationController
+  def index
+    if params[:q]
+      @articles = Article.search(columns: [:title, :description], keywords: params[:q])
+      return
+    end
+
+    @articles = Article.all
+  end
+
+  ...
+end
+```
+
+### 類義語の対応
+
+#### kuromoji に類義語を登録
+
+```ruby
+module ArticleSearchable
+  ...
+
+  included do
+    ...
+
+    settings analysis: analyzer_settings do
+      mapping do
+        indexes :id,          type: 'integer'
+        indexes :user_id,     type: 'integer'
+        indexes :title,       type: 'text', analyzer: 'custom_kuromoji'
+        indexes :description, type: 'text', analyzer: 'custom_kuromoji'
+      end
+    end
+
+  ...
+
+  class_methods do
+    ...
+
+    def analyzer_settings
+      {
+        analyzer: {
+          custom_kuromoji: {
+            type: 'custom',
+            char_filter: [],
+            tokenizer: 'kuromoji_tokenizer',
+            filter: [
+              'kuromoji_baseform',
+              'kuromoji_part_of_speech',
+              'cjk_width',
+              'kuromoji_stemmer',
+              'lowercase',
+              'synonym'
+            ]
+          }
+        },
+        filter: {
+          synonym: {
+            type: 'synonym',
+            synonyms: [
+              '旅館,お宿,旅亭 => ホテル'
+            ]
+          }
+        }
+      }
+    end
+  end
+end
+```
