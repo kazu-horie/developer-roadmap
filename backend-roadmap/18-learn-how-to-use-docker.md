@@ -225,7 +225,7 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:7.6.0
 RUN bin/elasticsearch-plugin install analysis-kuromoji
 ```
 
-#### dockerfile.yml
+#### docker-compose.yml
 
 ```yml
 version: '3.6'
