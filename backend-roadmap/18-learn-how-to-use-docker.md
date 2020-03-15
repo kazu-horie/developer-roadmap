@@ -300,3 +300,19 @@ services:
 ```
 
 ## Docker を用いた本番環境を構築する
+
+本番環境のURL: http://rails-blog-app-lb-994464301.ap-northeast-1.elb.amazonaws.com
+
+- Rails (ECS) + MySQL (RDS)
+
+### 作業内容
+
+- ソースコードの変更 (ヘルスチェック API の追加)
+- ECR へ docker イメージを push
+- VPC 作成
+- RDS インスタンスの作成
+- ECS タスクの作成
+- ECS クラスター / サービスの作成
+- ELB の作成
+
+参考: https://qiita.com/saongtx7/items/f36909587014d746db73
