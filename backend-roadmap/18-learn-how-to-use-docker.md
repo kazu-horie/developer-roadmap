@@ -301,7 +301,7 @@ services:
 
 ## Docker を用いた本番環境を構築する
 
-本番環境のURL: http://rails-blog-app-lb-994464301.ap-northeast-1.elb.amazonaws.com
+本番環境のURL: http://production-rails-blog-app-lb-481350589.ap-northeast-1.elb.amazonaws.com
 
 - Rails (ECS) + MySQL (RDS)
 
