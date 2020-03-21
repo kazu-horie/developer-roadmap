@@ -311,8 +311,170 @@ services:
 - ECR へ docker イメージを push
 - VPC 作成
 - RDS インスタンスの作成
-- ECS タスクの作成
-- ECS クラスター / サービスの作成
 - ELB の作成
+- ECS タスクの作成
+- ECS クラスターの作成
+- ECS サービスの作成
+- セキュリティグループの変更
+
+### ECR へ docker イメージを push
+
+- ECR の画面からリポジトリを作成しておく
+
+```
+# docker イメージのビルド
+$ docker build -t rails_blog_app-rails -f ./Dockerfile.deployment .
+
+# イメージのタグ付け
+$ docker tag {rails_blog_app-rails}:latest {リポジトリURI}:{新しく作成するタグ名}
+
+# イメージを Push
+$ docker push {リポジトリURI}:{作成したタグ名}
+```
+
+### EIP の作成
+
+![eip](/backend-roadmap/images/eip.png)
+
+### VPC の作成
+
+以下のサブネット構成の VPC を作成する
+
+| | ap-northeast-1a | ap-northeast-1c |
+| --- | --- | --- |
+| Public | 10.0.0.0/24 | 10.0.2.0/24 |
+| Private | 10.0.1.0/24 | 10.0.3.0/24 |
+
+VPC ウィザードの起動 -> **パブリックとプライベート サブネットを持つ VPC** を選択
+
+以下の様な設定で、VPC と AZ ap-northeast-1a のサブネットを作成する
+
+![vpc](/backend-roadmap/images/vpc.png)
+
+次に**サブネットの作成**から AZ ap-northeast-1c のサブネットを作成する
+
+- Public サブネット
+
+![subnet-public](/backend-roadmap/images/subnet-public.png)
+
+- Private サブネット
+
+![subnet-private](/backend-roadmap/images/subnet-private.png)
+
+public-1a サブネットの**自動割り当て IP 設定**を有効にする
+
+![subnet-public-config](/backend-roadmap/images/subnet-public-config.png)
+
+public-1c サブネットには、プライベートルートテーブルが設定されているので、 public-1a と同じパブリックルートテーブルを設定する
+
+![subnet-route-table](/backend-roadmap/images/subnet-route-table.png)
+
+### RDS インスタンスの作成
+
+作成した VPC を設定すること
+
+![rds](/backend-roadmap/images/rds.png)
+
+### ELB の作成
+
+Application Load Balancer を選択する
+
+- 基本的な設定は以下
+  - 構築した VPC を選択し、２つの サブネット を選択
+
+![elb-step-1](/backend-roadmap/images/elb-step-1.png)
+
+- セキュリティグループは新たに作成する
+
+![elb-sg](/backend-roadmap/images/elb-sg.png)
+
+- ルーティングの設定は以下
+  - ヘルスチェックのパスは利用している Gem の okcomputer に合わせる
+
+![elb-tg](/backend-roadmap/images/elb-tg.png)
+
+### ECS タスクの作成
+
+**タスクとコンテナの定義の設定**を以下に設定
+
+- タスク起動タイプ = EC2
+- ネットワークモード = bridge
+
+![task-and-container-config](/backend-roadmap/images/task-and-container-config.png)
+
+Rails コンテナを追加
+
+スタンダード設定は以下
+
+![task-standard](/backend-roadmap/images/task-standard.png)
+
+環境設定は以下
+
+![task-env](/backend-roadmap/images/task-env.png)
+
+### ECS クラスタの作成
+
+クラステンプレートは **EC2 Linux + ネットワーキング** を選択
+
+クラスターの設定は以下
+
+![cluster-config](/backend-roadmap/images/cluster-config.png)
+
+ネットワーキング設定は以下
+
+![cluster-network](/backend-roadmap/images/cluster-network.png)
+
+### ECS サービスの作成
+
+サービス設定は以下
+
+![service-config](/backend-roadmap/images/service-config.png)
+
+ネットワーク構成は以下
+
+![network-config](/backend-roadmap/images/network-config.png)
+
+### セキュリティグループの設定
+
+ECS インスタンスに以下の Inbound ルールを追加
+
+- ELB のセキュリティグループからの通信を許可
+- SSH 通信を許可
+
+![sg-ecs-instance](/backend-roadmap/images/sg-ecs-instance.png)
+
+RDS に以下の Inbound ルールを追加
+
+- ECS インスタンスのセキュリティグループからの 3306 への通信を許可
+
+![sg-rds-instance](/backend-roadmap/images/sg-rds-instance.png)
+
+### DB のマイグレート
+
+```
+# SSH 接続
+$ ssh -i "{キーファイル}" ec2-user@{ECS インスタンスのURI}
+
+# コンテナに bash で入る
+$ docker exec -it {コンテナ名} /bin/bash
+
+# マイグレート
+$ bin/rails db:create
+$ bin/rails db:schema:load
+```
+
+### ElastiCache クラスターの作成
+
+クラスターエンジンを Redisに選択すること
+
+![redis-instance](/backend-roadmap/images/redis-instance.png)
+
+ECS タスクの環境変数に Redis インスタンスのエンドポイントを追加
+
+![redi-url](/backend-roadmap/images/add-redis-url-task.png)
+
+Redis インスタンスの sg inbound ルールに 6379 ポートを許可するよう設定
+
+![sg-redis](/backend-roadmap/images/sg-redis.png)
 
 参考: https://qiita.com/saongtx7/items/f36909587014d746db73
