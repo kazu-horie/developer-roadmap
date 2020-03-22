@@ -315,7 +315,7 @@ services:
 - ECS タスクの作成
 - ECS クラスターの作成
 - ECS サービスの作成
-- セキュリティグループの変更
+- セキュリティグループのインバウンドルール変更
 
 ### ECR へ docker イメージを push
 
@@ -473,8 +473,35 @@ ECS タスクの環境変数に Redis インスタンスのエンドポイント
 
 ![redi-url](/backend-roadmap/images/add-redis-url-task.png)
 
-Redis インスタンスの sg inbound ルールに 6379 ポートを許可するよう設定
+Redis インスタンスのセキュリティグループの inbound ルールに 6379 ポートを許可するよう設定
 
 ![sg-redis](/backend-roadmap/images/sg-redis.png)
 
-参考: https://qiita.com/saongtx7/items/f36909587014d746db73
+### Elasticsearch Service ドメインの追加
+
+アクセスとセキュリティの設定は以下
+
+- VPC アクセスを選択
+- VPC は作成済のVPC
+- サブネットはプライベート
+
+![es-service-network](/backend-roadmap/images/es-service-network.png)
+
+アクセスポリシーはオープンアクセスを許可
+
+![es-service-access-policy](/backend-roadmap/images/es-service-access-policy.png)
+
+インバウンドルールに 80 ポートを許可するよう設定
+
+![sg-es](/backend-roadmap/images/sg-es.png)
+
+ECS タスクの環境変数に Elasticsearch ドメインのエンドポイントを追加
+
+![env-es-host](/backend-roadmap/images/env-es-host.png)
+
+
+
+## 参考
+
+- [初心者でもできる！ ECS × ECR × CircleCIでRailsアプリケーションをコンテナデプロイ](https://qiita.com/saongtx7/items/f36909587014d746db73)
+- [Rails ApplicationからAmazon Elasticsearch Serviceを使って素早く全文検索を可能にする](https://qiita.com/kyouryu_/items/061b3bc47c1d64b37818)
