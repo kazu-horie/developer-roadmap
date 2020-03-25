@@ -316,6 +316,8 @@ services:
 - ECS クラスターの作成
 - ECS サービスの作成
 - セキュリティグループのインバウンドルール変更
+- ElastiCache クラスターの作成
+- Elasticsearch Service ドメインの追加
 
 ### ECR へ docker イメージを push
 
